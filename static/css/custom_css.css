@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'anime';
+    src: url('/static/fonts/Anime.otf');
+}
+
+h1 {
+    font-family: 'anime';
+}
