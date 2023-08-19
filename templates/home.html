@@ -15,9 +15,11 @@
         crossorigin="anonymous"></script>
     <!-- Custom CSS -->
     <link href="{{url_for('static', filename='css/custom_css.css')}}" rel="stylesheet">
+    <!-- XLSX library -->
+    <script lang="javascript" src="{{url_for('static', filename='js/node_modules/xlsx/dist/xlsx.full.min.js')}}"></script>
     <!-- Custom JS -->
     <script src="{{url_for('static', filename='js/custom_js.js')}}"></script>
-
+    
 </head>
 
 <body>
@@ -26,6 +28,16 @@
     </div>
     <div style="margin-top: 2%; align-items: center; width:100vw; justify-content: center; display: flex;">
         <p>This is a sample Flask project to show the working of Flask with UI rendering.</p>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <button type="button" class="btn btn btn-primary" onclick="downloadExcel()">Download Excel</button>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn btn-primary" onclick="downloadCSV()">Download CSV</button>
+            </div>
+        </div>
     </div>
 </body>
 
