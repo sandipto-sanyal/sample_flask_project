@@ -34,7 +34,7 @@ function downloadCSV() {
 /**
  * This function converts a list of elements to options with proper html tags 
  * @param {Array} list_of_elements The list of elements to be converted into options
- * @returns {string} the list with <optio value> tags attached
+ * @returns {string} the list with <option value> tags attached
  */
 function jslist_to_html(list_of_elements) {
   html_to_add = ""
