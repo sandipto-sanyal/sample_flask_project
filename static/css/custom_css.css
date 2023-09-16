@@ -6,3 +6,11 @@
 h1 {
     font-family: 'anime';
 }
+
+div.customPopup {
+    width: 40px;
+    height: 40px;
+    background-color: cadetblue;
+    position: absolute;
+    z-index: 1;
+}

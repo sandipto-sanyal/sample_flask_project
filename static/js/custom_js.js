@@ -58,3 +58,36 @@ function jslist_to_html(list_of_elements) {
   }
   return html_to_add
 }
+
+function movePopup(event) {
+  var customPopup = document.getElementById('customPopup');
+  // move the customPopup
+  customPopup.style.top = window.scrollY + event.clientY + "px";
+  customPopup.style.left = window.scrollX + event.clientX + "px";
+}
+
+var clickCounter = 0
+function disappearPopup(event) {
+  var customPopup = document.getElementById('customPopup');
+  // move the customPopup
+  customPopup.style.top = window.scrollY + event.clientY + "px";
+  customPopup.style.left = window.scrollX + event.clientX + "px";
+  // make it disappear
+  if (clickCounter % 2 === 0) {
+    customPopup.style.zIndex = -1
+    customPopup.style.visibility = "hidden"
+  }
+  else {
+    customPopup.style.zIndex = 1
+    customPopup.style.visibility = "visible"
+  }
+  // increase clickCounter
+  clickCounter += 1
+}
+
+$(document).ready(function() {
+  // add event listener to make customPopup disappear
+  document.addEventListener('mousemove', movePopup)
+  document.addEventListener('click', disappearPopup)
+
+})
