@@ -1,3 +1,5 @@
+import { sayHi } from "./custom_module.js";
+
 function downloadExcel() {
   const data = [
     ['col1', 'col2', 'col3'],
@@ -87,6 +89,7 @@ function disappearPopup(event) {
 
 $(document).ready(function() {
   // add event listener to make customPopup disappear
+  sayHi('Sandipto') // user='Sandipto' will result in error. No keyworded arguments allowed
   document.addEventListener('mousemove', movePopup)
   document.addEventListener('click', disappearPopup)
 
