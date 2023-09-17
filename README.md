@@ -7,7 +7,7 @@
  - ```conda activate flask_env```
  - ```pip install flask flask-cors```
 
- Open a command prompt in the project directory then run ```python server.py```.
+ Open a command prompt in the project directory then run ```python app.py```.
 
  # Structure of project
  Since this project is created using Flask framework, it has to follow particular project structure for proper functioning.
