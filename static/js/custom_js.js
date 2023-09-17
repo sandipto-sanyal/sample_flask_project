@@ -44,3 +44,4 @@ function downloadCSV() {
     // remove the element
     a.remove();
 }
+

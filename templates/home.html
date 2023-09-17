@@ -27,9 +27,17 @@
     <!-- Custom CSS -->
     <link href="/static/css/custom_css.css" rel="stylesheet">
     <!-- XLSX library -->
-    <script lang="javascript" src="/static/js/node_modules/xlsx/dist/xlsx.full.min.js"></script>
+    <script lang="javascript" src="/static/js/xlsx.full.min.js"></script>
     <!-- Custom JS -->
-    <script src="/static/js/main.js" type="module"></script>
+    <script type="module">
+        import { sayHi, movePopup, disappearPopup } from "/static/js/child.js";
+        $(document).ready(function() {
+        // add event listener to make customPopup disappear
+        sayHi('Sandipto') // user='Sandipto' will result in error. No keyworded arguments allowed
+        document.addEventListener('mousemove', movePopup)
+        document.addEventListener('click', disappearPopup)  
+    })
+    </script>
     <script src="/static/js/custom_js.js"></script>
     
 </head>
