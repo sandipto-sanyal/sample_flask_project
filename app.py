@@ -1,19 +1,21 @@
 from flask import Flask, render_template, request
 from flask_sock import Sock
+import simple_websocket
+from typing import *
 
 app = Flask(__name__)
 sock = Sock(app)
 
 # Store state: which clients are in which rooms
 rooms = {}  # {room_name: set of websocket connections}
-user_rooms = {}  # {ws: room_name}
+user_rooms:Dict[simple_websocket.ws.Server, str] = {}  # {ws: room_name}
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
 @sock.route("/ws")
-def websocket(ws):
+def websocket(ws:simple_websocket.ws.Server):
     # First message from client should be "JOIN room_name"
     join_msg = ws.receive()
     if join_msg and join_msg.startswith("JOIN "):
@@ -45,4 +47,4 @@ def websocket(ws):
 if __name__ == "__main__":
     # Run with Hypercorn for WebSocket support:
     # hypercorn app:app --bind 0.0.0.0:8000
-    app.run(debug=True)
+    app.run(debug=False)
