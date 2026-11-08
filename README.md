@@ -17,3 +17,7 @@
     1. ./static/js: To host custom js files
     1. ./static/fonts: To put custom fonts
     1. ./static/media: To put media contents like images, videos etc.
+
+   
+# Python Debugging Launch.json Configs
+- https://code.visualstudio.com/docs/python/debugging#_set-configuration-options
