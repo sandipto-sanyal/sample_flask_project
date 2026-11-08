@@ -1,18 +1,48 @@
-from flask import Flask, render_template
-from flask_cors import CORS
-from werkzeug.middleware.dispatcher import DispatcherMiddleware
-from werkzeug.exceptions import NotFound
+from flask import Flask, render_template, request
+from flask_sock import Sock
 
 app = Flask(__name__)
-app.config['TEMPLATES_AUTO_RELOAD'] = True
-CORS(app, resources={r"/*": {"origins": "*"}})
+sock = Sock(app)
+
+# Store state: which clients are in which rooms
+rooms = {}  # {room_name: set of websocket connections}
+user_rooms = {}  # {ws: room_name}
 
 @app.route("/")
-def home():
-  return render_template('home.html')
+def index():
+    return render_template("index.html")
 
-hostedApp = Flask('frontend')
-hostedApp.wsgi_app = DispatcherMiddleware(app=NotFound(), mounts={"": app})
+@sock.route("/ws")
+def websocket(ws):
+    # First message from client should be "JOIN room_name"
+    join_msg = ws.receive()
+    if join_msg and join_msg.startswith("JOIN "):
+        room = join_msg.split(" ", 1)[1]
+        rooms.setdefault(room, set()).add(ws)
+        user_rooms[ws] = room
+        ws.send(f"You joined room: {room}")
 
-if __name__ == '__main__':
-    hostedApp.run(host='127.0.0.1', port=8000, debug=False)
+    try:
+        while True:
+            msg = ws.receive()
+            if msg is None:
+                break  # client disconnected
+
+            room = user_rooms.get(ws)
+            if room:
+                # Broadcast to everyone in the same room
+                for conn in list(rooms[room]):
+                    try:
+                        conn.send(f"[{room}] {msg}")
+                    except Exception:
+                        rooms[room].discard(conn)
+    finally:
+        # Cleanup on disconnect
+        room = user_rooms.pop(ws, None)
+        if room and ws in rooms.get(room, set()):
+            rooms[room].discard(ws)
+
+if __name__ == "__main__":
+    # Run with Hypercorn for WebSocket support:
+    # hypercorn app:app --bind 0.0.0.0:8000
+    app.run(debug=True)
