@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from flask_sock import Sock
 import simple_websocket
 from typing import *
@@ -12,9 +12,9 @@ CORS(
     app,
     resources={r"/api/*": {"origins": CORS_ORIGIN_LIST}},
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"],
-    expose_headers=["Content-Disposition"],  # headers JS is allowed to read
-    supports_credentials=False,
+    # allow_headers=["Content-Type", "Authorization"],
+    # expose_headers=["Content-Disposition"],  # headers JS is allowed to read
+    supports_credentials=True,
     max_age=600,  # cache preflight for 10 minutes
 )
 
@@ -27,6 +27,18 @@ user_rooms:Dict[simple_websocket.ws.Server, str] = {}  # {ws: room_name}
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@sock.route('/ws/<username>')
+def websocket_connection(ws, username):
+    pass
+
+@app.route("/api/test", methods=["POST", ])
+def test():
+    username = request.json['username']
+    database = request.json['database']
+    response = {"message": f"User {username} made an entry to DB: {database}"}
+    return jsonify(response), 200
 
 @sock.route("/ws")
 def websocket(ws:simple_websocket.ws.Server):
