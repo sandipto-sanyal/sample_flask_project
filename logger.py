@@ -5,9 +5,9 @@ nothing is printed to the console. Log level comes from LOG_LEVEL in .env (defau
 
 Usage:
 
-    from chat_logger import get_logger
-    logger = get_logger(__name__)
-    logger.info("message: %s", payload)
+    from logger import get_logger
+    log = get_logger(__name__)
+    log.info("message: %s", payload)
 """
 
 import logging
@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
-LOG_FILE = os.path.join(LOG_DIR, "chatbot.log")
+LOG_FILE = os.path.join(LOG_DIR, "log.log")
 LOG_FORMAT = "%(asctime)s | %(levelname)-7s | %(name)s | %(message)s"
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 
@@ -49,3 +49,8 @@ def get_logger(name: str) -> logging.Logger:
     """Return a logger under the 'chatbot' namespace, configuring handlers once."""
     _configure()
     return logging.getLogger(f"chatbot.{name}")
+
+if __name__ == '__main__':
+    log = get_logger(__name__)
+    payload = {"k1":"v1", "k2":"v2"}
+    log.info("message: %s", payload)
