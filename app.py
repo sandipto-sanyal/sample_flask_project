@@ -3,7 +3,13 @@ from flask_sock import Sock
 import simple_websocket
 from typing import *
 from flask_cors import CORS
+from simple_websocket.ws import Server
 import os
+import json
+from chatbot_logic import business_logic
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
 
 app = Flask(__name__)
 sock = Sock(app)
@@ -29,10 +35,6 @@ def index():
     return render_template("index.html")
 
 
-@sock.route('/ws/<username>')
-def websocket_connection(ws, username):
-    pass
-
 @app.route("/api/test", methods=["POST", ])
 def test():
     username = request.json['username']
@@ -41,34 +43,16 @@ def test():
     return jsonify(response), 200
 
 @sock.route("/ws")
-def websocket(ws:simple_websocket.ws.Server):
-    # First message from client should be "JOIN room_name"
-    join_msg = str(ws.receive())
-    if join_msg and join_msg.startswith("JOIN "):
-        room = join_msg.split(" ", 1)[1]
-        rooms.setdefault(room, set()).add(ws)
-        user_rooms[ws] = room
-        ws.send(f"You joined room: {room}")
-
+def websocket(ws:Server):
     try:
         while True:
-            msg = ws.receive()
+            msg = str(ws.receive())
+            msg = json.loads(msg)
             if msg is None:
                 break  # client disconnected
-
-            room = user_rooms.get(ws)
-            if room:
-                # Broadcast to everyone in the same room
-                for conn in list(rooms[room]):
-                    try:
-                        conn.send(f"[{room}] {msg}")
-                    except Exception:
-                        rooms[room].discard(conn)
+            business_logic(msg, ws)
     finally:
-        # Cleanup on disconnect
-        room = user_rooms.pop(ws, None)
-        if room and ws in rooms.get(room, set()):
-            rooms[room].discard(ws)
+       ws.send({"message":"bye"})
 
 if __name__ == "__main__":
     # Run with Hypercorn for WebSocket support:
